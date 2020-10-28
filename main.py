@@ -15,7 +15,14 @@ font = tkFont.Font(size=60)
 def buttonPress(i, j):
     print("click %s %s" %(i, j))
     game.move(i, j)
-    button[i][j].config(text = game.getBoard(i, j).upper())
+    buttonUpdate(i, j)
+
+    if game.is_there_winner():
+        print("WIN")
+
+def buttonUpdate(i, j):
+    text = game.getBoard(i, j).upper()
+    button[i][j].config(text=text)
 
 button = [
     [],
@@ -36,7 +43,7 @@ for i in range(3):
             tk.Button(
                 master=frame,
                 font=font,
-                text=game.getBoard(i, j),
+                text=game.getBoard(i, j).upper(),
                 command=lambda locI=i, locJ=j: buttonPress(locI, locJ),
                 width=3
             )
