@@ -6,6 +6,8 @@ class Game:
             ['', '', '']
         ]
         self.current_player = "x"
+        self.wait_player = "o"
+        self.win_player = str()
     
     def getBoard(self, i=None, j=None):
         if i != None and j != None:
@@ -14,10 +16,7 @@ class Game:
             return self.board
 
     def change_player(self):
-        if self.current_player == "x":
-            self.current_player = "o"
-        else:
-            self.current_player = "x"
+        self.current_player, self.wait_player = self.wait_player, self.current_player
 
     def move(self, i, j):
         self.board[i][j] = self.current_player
@@ -37,7 +36,9 @@ class Game:
 
         for sum in sums:
             if sum == 'xxx' or sum == 'ooo':
+                self.win_player = self.wait_player
                 return True
-
-        
         return False
+
+    def winner(self):
+        return self.win_player if self.is_there_winner() else False

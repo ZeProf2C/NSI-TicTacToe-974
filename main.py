@@ -18,7 +18,7 @@ def buttonPress(i, j):
     buttonUpdate(i, j)
 
     if game.is_there_winner():
-        print("WIN")
+        print(game.winner())
 
 def buttonUpdate(i, j):
     text = game.getBoard(i, j).upper()
