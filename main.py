@@ -1,16 +1,28 @@
 #!/usr/bin/env python3
 
 import tkinter as tk
+from tkinter import messagebox
 import tkinter.font as tkFont
 import pyautogui
+
+from time import sleep
 
 from Game import *
 
 game = Game()
-
-
-window = tk.Tk()
+root = tk.Tk()
 font = tkFont.Font(size=60)
+
+buttons = [
+    [],
+    [],
+    []
+]
+
+def win():
+    for i in range(len(buttons)):
+        for j in range(len(buttons[i])):
+            buttons[i][j].config(state='disabled')
 
 def buttonPress(i, j):
     print("click %s %s" %(i, j))
@@ -18,28 +30,22 @@ def buttonPress(i, j):
     buttonUpdate(i, j)
 
     if game.is_there_winner():
-        print(game.winner())
+        win()
 
 def buttonUpdate(i, j):
     text = game.getBoard(i, j).upper()
-    button[i][j].config(text=text)
-
-button = [
-    [],
-    [],
-    []
-]
+    buttons[i][j].config(text=text)
 
 for i in range(3):
     for j in range(3):
         frame = tk.Frame(
-            master=window,
+            master=root,
             relief=tk.RAISED,
             borderwidth=1
         )
         frame.grid(row=i, column=j, padx=5, pady=5)
 
-        button[i].append(
+        buttons[i].append(
             tk.Button(
                 master=frame,
                 font=font,
@@ -48,6 +54,5 @@ for i in range(3):
                 width=3
             )
         )
-        button[i][j].pack(expand=1)
-
-window.mainloop()
+        buttons[i][j].pack(expand=1)
+root.mainloop()
