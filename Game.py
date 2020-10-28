@@ -1,5 +1,3 @@
-from tkinter import StringVar
-
 class Game:
     def __init__(self):
         self.board = [
