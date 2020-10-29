@@ -27,11 +27,11 @@ def disableButtons():
 
 def win():
     disableButtons()
-    messagebox.showinfo("Game Over", "Le joueur %s a gagné !" %(game.winner().upper()), command=replay())
+    messagebox.showinfo("Game Over", "Le joueur %s a gagné !" %(game.winner().upper()))
 
 def NoWinner():
     disableButtons()
-    messagebox.showerror("Game Over", "Vous êtes MAUVAIS !", command=replay())
+    messagebox.showerror("Game Over", "Vous êtes MAUVAIS !")
     
 
 def buttonPress(i, j):

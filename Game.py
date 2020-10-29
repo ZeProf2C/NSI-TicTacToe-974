@@ -47,6 +47,8 @@ class Game:
        
         for i in range(3): #Column
             for j in range(3): #Row
-                if  self.board[i][j] == '' :
+                if self.board[i][j] == '':
                     return False
-        return True
+                else:
+                    pass
+        return True if not self.winner() else False
