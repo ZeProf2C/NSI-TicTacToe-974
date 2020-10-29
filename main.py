@@ -29,7 +29,7 @@ def win():
     disableButtons()
     messagebox.showinfo("Game Over", "Le joueur %s a gagné !" %(game.winner().upper()), command=replay())
 
-def nul():
+def NoWinner():
     disableButtons()
     messagebox.showerror("Game Over", "Vous êtes MAUVAIS !", command=replay())
     
@@ -39,8 +39,8 @@ def buttonPress(i, j):
     buttonUpdate(i, j)
     if game.is_there_winner():
         win()
-    if game.nul():
-        nul()
+    if game.NoWinner():
+        NoWinner()
 
 def buttonUpdate(i, j):
     text = game.getBoard(i, j).upper()

@@ -43,15 +43,10 @@ class Game:
     def winner(self):
         return self.win_player if self.is_there_winner() else False
 
-    def nul(self):
-        oneDim = list()
+    def NoWinner(self):
+       
         for i in range(3): #Column
             for j in range(3): #Row
-                oneDim.append(self.board[i][j])
-
-        try:
-            oneDim.index('')
-            return False
-        except:
-            return True
-            
+                if  self.board[i][j] == '' :
+                    return False
+        return True
