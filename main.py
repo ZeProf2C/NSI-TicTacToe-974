@@ -39,11 +39,11 @@ def buttonPress(i, j):
     buttonUpdate(i, j)
     if game.is_there_winner():
         win()
-    if game.NoWinner():
+    if game.no_winner():
         NoWinner()
 
 def buttonUpdate(i, j):
-    text = game.getBoard(i, j).upper()
+    text = game.get_board(i, j).upper()
     buttons[i][j].config(text=text, state='disabled')
     buttons[i][j].pack()
     root.update()
@@ -62,7 +62,7 @@ def initBoard():
                 tk.Button(
                     master=frame,
                     font=font,
-                    text=game.getBoard(i, j).upper(),
+                    text=game.get_board(i, j).upper(),
                     command=lambda locI=i, locJ=j: buttonPress(locI, locJ),
                     width=3,
                     state='active'

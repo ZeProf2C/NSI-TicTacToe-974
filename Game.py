@@ -9,7 +9,7 @@ class Game:
         self.wait_player = "o"
         self.win_player = str()
     
-    def getBoard(self, i=None, j=None):
+    def get_board(self, i=None, j=None):
         if i != None and j != None:
             return self.board[i][j]
         else:
@@ -43,7 +43,7 @@ class Game:
     def winner(self):
         return self.win_player if self.is_there_winner() else False
 
-    def NoWinner(self):
+    def no_winner(self):
        
         for i in range(3): #Column
             for j in range(3): #Row
@@ -52,3 +52,11 @@ class Game:
                 else:
                     pass
         return True if not self.winner() else False
+
+    def get_state(self):
+        if self.winner():
+            return 'win'
+        elif self.no_winner():
+            return 'draw'
+        else:
+            return 'ongoing'
