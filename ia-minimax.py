@@ -1,83 +1,90 @@
 from copy import deepcopy
 
-X_WIN = 'Le joueur X gagne'
-O_WIN = 'Le joueur O gagne'
-DRAW = 'Match nul'
-
 X = 'x'
 O = 'o'
-BLANK = ' '
+BLANK = ''
 B = BLANK
 
-def eval_pos(board, turn):
-    possibilities = list()
-    for i in range(len(board)):
-        for j in range(len(board[i])):
-            if board[i][j] == BLANK:
-                copy = deepcopy(board)
-                copy[i][j] = turn
-                possibilities.append(copy)
-    return possibilities
+X_WIN = 'Le joueur X gagne'
+O_WIN = 'Le joueur O gagne'
+DRAW = 'MAtch nul'
 
-def eval_state(board):
-    sums = list()
-    for i in range(3):
-        sums.append(
-            board[i][0] + board[i][1] + board[i][2]
-            )
-    for j in range(3):
-        sums.append(
-            board[0][j] + board[1][j] + board[2][j]
-            )
-    sums.append(
-        board[0][0] + board[1][1] + board[2][2]
-    )
-    sums.append(
-        board[0][2] + board[1][1] + board[2][0]
-    )
+def playable(board):
+    if win(board) is None:
+        return True
+    else: 
+        return False
+
+def win(board):
+    sums = list() #each elements is a sum of one col, one row or one diagonal
+    for i in range(3): #Column
+        sums.append(board[i][0] + board[i][1] + board[i][2])
+
+    for j in range(3): #Row
+        sums.append(board[0][j] + board[1][j] + board[2][j])
     
+    sums.append(board[0][0] + board[1][1] + board[2][2]) #Diag leftToRight
+    sums.append(board[0][2] + board[1][1] + board[2][0])
+
     for sum in sums:
         if sum == X+X+X:
             return X_WIN
         elif sum == O+O+O:
             return O_WIN
-    return DRAW
+    return None
 
-def is_full(board):
-    for row in board:
-        try:
-            print(row.index(''))
-            return False
-        except ValueError:
-            return True
+def isFull(board):
+    for i in board:
+        for j in board:
+            if j == '':
+                return False
+    return True
+    
 
-def solve_tree(board, player):
-    playing = player
-    waiting = O if player==X else X
-    branch = eval_pos(board, playing)
-    for game in branch:
-        if eval_state(game) == X_WIN:
-            print(X_WIN)
-            for i in game:
-                print(i)
-        elif eval_state(game) == O_WIN:
-            print(O_WIN)
-            for i in game:
-                print(i)
+class Node():
+    def __init__(self, board, turn, depth):
+        self.board = board
+        self.turn = turn
+        self.depth = depth
+        self.children = list()
+        self.value = None
+        self.createChildren()
+
+    def createChildren(self):
+        if playable(self.board):
+            for i in range(3):
+                for j in range(3):
+                    if self.board[i][j] == BLANK:
+                        copy = deepcopy(self.board)
+                        copy[i][j] = self.turn
+                        self.children.append(
+                            Node(
+                                copy,
+                                X if self.turn == O else O,
+                                self.depth-1
+                            )
+                        )
+
+def exploreNode(node):
+    possible = list()
+    for child in node.children:
+        if len(child.children) == 0:
+            possible.append(child.board)
         else:
-            if not is_full(board):
-                print('recursiv')
-                solve_tree(game, waiting)
-            else:
-                print(eval_state(board))
-                for i in game:
-                    print(i)
+            possible.append(exploreNode(child))
+    return possible
 
-print(solve_tree(
-    [
-        [X,B,O],
-        [B,O,X],
-        [X,O,X]
-    ],
-    X
-))
+board = [
+    [X, O, X],
+    [O, O, X],
+    [B, B, B]
+]
+
+mainNode = Node(board, X, 0)
+mainNode.createChildren()
+explore = exploreNode(mainNode)
+
+for game in explore:
+    for row in game:
+        print(row)
+    print('\n')
