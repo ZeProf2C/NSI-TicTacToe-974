@@ -10,7 +10,7 @@ O_WIN = 'Le joueur O gagne'
 DRAW = 'MAtch nul'
 
 def playable(board):
-    if win(board) is None:
+    if not win(board):
         return True
     else: 
         return False
@@ -31,14 +31,30 @@ def win(board):
             return X_WIN
         elif sum == O+O+O:
             return O_WIN
-    return None
+    return False
 
 def isFull(board):
     for i in board:
         for j in board:
-            if j == '':
+            if j == BLANK:
                 return False
     return True
+
+def drawGame(board):
+    if isFull(board) and not win(board):
+        return  DRAW
+    else:
+        return False
+
+def evalBoard(board):
+    if win(board) == X_WIN:
+        return X
+    elif win(board) == O_WIN:
+        return O
+    elif drawGame(board) == DRAW:
+        return DRAW
+    else:
+        return False
     
 
 class Node():
@@ -64,15 +80,47 @@ class Node():
                                 self.depth-1
                             )
                         )
+    def evalValue(self, minPlayer, maxPlayer):
+        childrenValues = list()
+        for child in self.children:
+            if len(child.children) == 0: #Si l'enfant n'a pas d'enfant
+                if evalBoard(child.board) == minPlayer:
+                    child.value = -1
+                elif evalBoard(child.board) == DRAW:
+                    child.value = 0
+                elif evalBoard(child.board) == maxPlayer:
+                    child.value = 1
+                childrenValues.append(child.value)
+            else:
+                childrenValues.append(child.evalValue(minPlayer, maxPlayer))
+        minValue = 1
+        print(childrenValues)
+        for i in childrenValues:
+            if i < minValue:
+                minValue = i
+        print(minValue)
+        return minValue
 
-def exploreNode(node):
-    possible = list()
+                
+
+"""def setTreeValue(node, minPlayer, maxPlayer): #Calculate the value of all node in tree. min is human, max is computer
+    childValues = list()
     for child in node.children:
         if len(child.children) == 0:
-            possible.append(child.board)
+            if evalBoard(child.board) == minPlayer:
+                child.value = -1
+            elif evalBoard(child.board) == DRAW:
+                child.value = 0
+            elif evalBoard(child.board) == maxPlayer:
+                child.value = 1
+            childValues.append(child.value)
+            print(childValues)
         else:
-            possible.append(exploreNode(child))
-    return possible
+            setTreeValue(child, minPlayer, maxPlayer)
+"""
+
+
+
 
 board = [
     [X, O, X],
@@ -81,10 +129,5 @@ board = [
 ]
 
 mainNode = Node(board, X, 0)
-mainNode.createChildren()
-explore = exploreNode(mainNode)
+mainNode.evalValue(O, X)
 
-for game in explore:
-    for row in game:
-        print(row)
-    print('\n')
