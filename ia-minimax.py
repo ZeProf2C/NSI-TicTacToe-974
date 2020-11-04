@@ -80,54 +80,60 @@ class Node():
                                 self.depth-1
                             )
                         )
-    def evalValue(self, minPlayer, maxPlayer):
+    def evalValue(self, minPlayer, maxPlayer, turn):
         childrenValues = list()
+        bestValue = 0
+        if turn == maxPlayer:
+            playing = maxPlayer
+            waiting = minPlayer
+            maximising = True
+        else:
+            playing = minPlayer
+            waiting = maxPlayer
+            maximising = False
+
         for child in self.children:
             if len(child.children) == 0: #Si l'enfant n'a pas d'enfant
                 if evalBoard(child.board) == minPlayer:
-                    child.value = -1
+                    child.value = -100+self.depth
                 elif evalBoard(child.board) == DRAW:
-                    child.value = 0
+                    child.value = 0+self.depth
                 elif evalBoard(child.board) == maxPlayer:
-                    child.value = 1
+                    child.value = 100+self.depth
                 childrenValues.append(child.value)
+                #print(child.board, child.value, child.depth)
             else:
-                childrenValues.append(child.evalValue(minPlayer, maxPlayer))
-        minValue = 1
-        print(childrenValues)
+                childrenValues.append(child.evalValue(minPlayer, maxPlayer, waiting))
+
+        #print(childrenValues)
         for i in childrenValues:
-            if i < minValue:
-                minValue = i
-        print(minValue)
-        return minValue
-
-                
-
-"""def setTreeValue(node, minPlayer, maxPlayer): #Calculate the value of all node in tree. min is human, max is computer
-    childValues = list()
-    for child in node.children:
-        if len(child.children) == 0:
-            if evalBoard(child.board) == minPlayer:
-                child.value = -1
-            elif evalBoard(child.board) == DRAW:
-                child.value = 0
-            elif evalBoard(child.board) == maxPlayer:
-                child.value = 1
-            childValues.append(child.value)
-            print(childValues)
-        else:
-            setTreeValue(child, minPlayer, maxPlayer)
-"""
-
+            if maximising:
+                if i > bestValue:
+                    bestValue = i
+            elif not maximising:
+                if i < bestValue:
+                    bestValue = i
+        self.value = bestValue
+        #print(bestValue)
+        return bestValue
 
 
 
 board = [
-    [X, O, X],
-    [O, O, X],
+    [B, B, B],
+    [B, B, B],
     [B, B, B]
 ]
 
 mainNode = Node(board, X, 0)
-mainNode.evalValue(O, X)
+mainNode.evalValue(O, X, X)
+
+lastValue = mainNode.children[0].value
+bestBoard = mainNode.children[0].board
+for child in mainNode.children:
+    if child.value > lastValue:
+        lastValue = child.value
+        bestBoard = child.board
+print(bestBoard)
+
 
