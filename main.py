@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from head import *
 
 import tkinter as tk
 from tkinter import messagebox
@@ -6,6 +7,7 @@ import tkinter.font as tkFont
 from time import sleep
 
 from Game import *
+import iaMinimax
 
 game = Game()
 root = tk.Tk()
@@ -32,11 +34,22 @@ def win():
 def NoWinner():
     disableButtons()
     messagebox.showerror("Game Over", "Vous êtes MAUVAIS !")
+
+def iaMove():
+    i, j = iaMinimax.minimax(game.get_board(), game.current_player, game.wait_player)
+    print(i, j)
+    game.move(i, j)
+    buttonUpdate(i, j)
+    if game.is_there_winner():
+        win()
+    if game.no_winner():
+        NoWinner()
     
 
 def buttonPress(i, j):
     game.move(i, j)
     buttonUpdate(i, j)
+    iaMove()
     if game.is_there_winner():
         win()
     if game.no_winner():

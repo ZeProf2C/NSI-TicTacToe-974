@@ -1,12 +1,15 @@
+from head import *
+import iaMinimax
+
 class Game:
     def __init__(self):
         self.board = [
-            ['', '', ''],
-            ['', '', ''],
-            ['', '', '']
+            [B, B, B],
+            [B, B, B],
+            [B, B, B]
         ]
-        self.current_player = "x"
-        self.wait_player = "o"
+        self.current_player = O
+        self.wait_player = X
         self.win_player = str()
     
     def get_board(self, i=None, j=None):
@@ -35,7 +38,7 @@ class Game:
         sums.append(self.board[0][2] + self.board[1][1] + self.board[2][0]) #Diag rightToLeft
 
         for sum in sums:
-            if sum == 'xxx' or sum == 'ooo':
+            if sum == X+X+X or sum == O+O+O:
                 self.win_player = self.wait_player
                 return True
         return False
@@ -47,7 +50,7 @@ class Game:
        
         for i in range(3): #Column
             for j in range(3): #Row
-                if self.board[i][j] == '':
+                if self.board[i][j] == BLANK:
                     return False
                 else:
                     pass
@@ -55,8 +58,8 @@ class Game:
 
     def get_state(self):
         if self.winner():
-            return 'win'
+            return WIN
         elif self.no_winner():
-            return 'draw'
+            return DRAW
         else:
-            return 'ongoing'
+            return ONGOING

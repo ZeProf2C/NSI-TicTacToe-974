@@ -1,13 +1,5 @@
+from head import *
 from copy import deepcopy
-
-X = 'x'
-O = 'o'
-BLANK = ''
-B = BLANK
-
-X_WIN = 'Le joueur X gagne'
-O_WIN = 'Le joueur O gagne'
-DRAW = 'MAtch nul'
 
 def playable(board):
     if not win(board):
@@ -56,6 +48,43 @@ def evalBoard(board):
     else:
         return False
     
+def jolieBoard(board):
+    for row in board:
+        print(row)
+    print('\n')
+
+def bestBoard(mainNode):
+    lastValue = mainNode.children[0].value
+    bestBoard = mainNode.children[0].board
+    for child in mainNode.children:
+        if child.value > lastValue:
+            lastValue = child.value
+            bestBoard = child.board
+    return bestBoard
+
+def knowTurn(board, computer, human): #Définis un certains nombre d'état (vide, premier coup...) pour éviter les calculs
+    c = computer
+    h = human
+    boards = [
+        [[B, B, B],[B, B, B],[B, B, B]],
+        [[h, B, B],[B, B, B],[B, B, B]],
+        [[B, h, B],[B, B, B],[B, B, B]],
+        [[B, B, h],[B, B, B],[B, B, B]],
+        [[B, B, B],[h, B, B],[B, B, B]],
+        [[B, B, B],[B, h, B],[B, B, B]],
+        [[B, B, B],[B, B, h],[B, B, B]],
+        [[B, B, B],[B, B, B],[h, B, B]],
+        [[B, B, B],[B, B, B],[B, h, B]],
+        [[B, B, B],[B, B, B],[B, B, h]]
+    ]
+    for boardModel in boards:
+        if board <= boardModel:
+            if board[1][1] == BLANK:
+                return 1, 1
+            else:
+                return 0, 0
+    return False
+
 
 class Node():
     def __init__(self, board, turn, depth):
@@ -80,10 +109,10 @@ class Node():
                                 self.depth-1
                             )
                         )
-    def evalValue(self, minPlayer, maxPlayer, turn):
+    def evalValue(self, minPlayer, maxPlayer):
         childrenValues = list()
         bestValue = 0
-        if turn == maxPlayer:
+        if self.turn == maxPlayer:
             playing = maxPlayer
             waiting = minPlayer
             maximising = True
@@ -95,17 +124,14 @@ class Node():
         for child in self.children:
             if len(child.children) == 0: #Si l'enfant n'a pas d'enfant
                 if evalBoard(child.board) == minPlayer:
-                    child.value = -100+self.depth
-                elif evalBoard(child.board) == DRAW:
-                    child.value = 0+self.depth
+                    child.value = -100-self.depth
+                    childrenValues.append(child.value)
                 elif evalBoard(child.board) == maxPlayer:
                     child.value = 100+self.depth
-                childrenValues.append(child.value)
-                #print(child.board, child.value, child.depth)
+                    childrenValues.append(child.value)
             else:
-                childrenValues.append(child.evalValue(minPlayer, maxPlayer, waiting))
+                childrenValues.append(child.evalValue(minPlayer, maxPlayer))
 
-        #print(childrenValues)
         for i in childrenValues:
             if maximising:
                 if i > bestValue:
@@ -114,26 +140,29 @@ class Node():
                 if i < bestValue:
                     bestValue = i
         self.value = bestValue
-        #print(bestValue)
         return bestValue
 
-
-
-board = [
-    [B, B, B],
-    [B, B, B],
+"""board = [
+    [O, X, X],
+    [X, O, O],
     [B, B, B]
 ]
 
 mainNode = Node(board, X, 0)
-mainNode.evalValue(O, X, X)
-
-lastValue = mainNode.children[0].value
-bestBoard = mainNode.children[0].board
-for child in mainNode.children:
-    if child.value > lastValue:
-        lastValue = child.value
-        bestBoard = child.board
-print(bestBoard)
+mainNode.evalValue(O, X)
+board = bestBoard(mainNode)
+jolieBoard(board)"""
 
 
+
+def minimax(board, computer, human):
+    if knowTurn(board, computer, human):
+        return knowTurn(board, computer, human)
+    mainNode = Node(board, computer, 0)
+    mainNode.evalValue(human, computer)
+    newBoard = bestBoard(mainNode)
+    for i in range(len(newBoard)):
+        for j in range(len(newBoard[i])):
+            if newBoard[i][j] != board[i][j]:
+                del mainNode
+                return i, j
