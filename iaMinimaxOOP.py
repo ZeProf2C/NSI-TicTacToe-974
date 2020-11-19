@@ -156,10 +156,13 @@ jolieBoard(board)"""
 
 
 def minimax(board, computer, human):
-    if knowTurn(board, computer, human):
-        return knowTurn(board, computer, human)
+    """if knowTurn(board, computer, human):
+        return knowTurn(board, computer, human)"""
     mainNode = Node(board, computer, 0)
     mainNode.evalValue(human, computer)
+    for child in mainNode.children:
+        print(child.value)
+        print(child.board)
     newBoard = bestBoard(mainNode)
     for i in range(len(newBoard)):
         for j in range(len(newBoard[i])):

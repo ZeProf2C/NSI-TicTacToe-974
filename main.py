@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-from head import *
-
 import tkinter as tk
 from tkinter import messagebox
 import tkinter.font as tkFont
+
+import timeit
+
 from time import sleep
 
+from head import *
 from Game import *
-import iaMinimax
+from iaMinimaxNoOOP import *
+
 
 game = Game()
 root = tk.Tk()
@@ -19,6 +22,7 @@ buttons = [
     []
 ]
 
+
 def disableButtons():
     for i in range(len(buttons)):
         for j in range(len(buttons[i])):
@@ -26,6 +30,18 @@ def disableButtons():
             buttons[i][j].pack()
     root.update()
 
+def enableButtons():
+    for i in range(len(buttons)):
+        for j in range(len(buttons[i])):
+            buttons[i][j].config(state='active')
+            buttons[i][j].pack()
+    root.update()
+
+def buttonUpdate(i, j):
+    text = game.get_board(i, j).upper()
+    buttons[i][j].config(text=text)
+    buttons[i][j].pack()
+    root.update()
 
 def win():
     disableButtons()
@@ -33,33 +49,31 @@ def win():
 
 def NoWinner():
     disableButtons()
-    messagebox.showerror("Game Over", "Vous êtes MAUVAIS !")
+    messagebox.showinfo("Game Over", "Vous êtes MAUVAIS !")
 
 def iaMove():
-    i, j = iaMinimax.minimax(game.get_board(), game.current_player, game.wait_player)
-    print(i, j)
+    i, j, v = aiPlay(game.get_board())
     game.move(i, j)
     buttonUpdate(i, j)
+
+def winUpdate():
     if game.is_there_winner():
         win()
-    if game.no_winner():
+    elif game.no_winner():
         NoWinner()
-    
 
 def buttonPress(i, j):
-    game.move(i, j)
-    buttonUpdate(i, j)
-    iaMove()
-    if game.is_there_winner():
-        win()
-    if game.no_winner():
-        NoWinner()
+    if game.move(i, j):
+        buttonUpdate(i, j)
+    
+    winUpdate()
 
-def buttonUpdate(i, j):
-    text = game.get_board(i, j).upper()
-    buttons[i][j].config(text=text, state='disabled')
-    buttons[i][j].pack()
-    root.update()
+    disableButtons()
+    iaMove()
+    enableButtons()
+
+    winUpdate()
+    
 
 def initBoard():
     for i in range(3):
@@ -78,10 +92,11 @@ def initBoard():
                     text=game.get_board(i, j).upper(),
                     command=lambda locI=i, locJ=j: buttonPress(locI, locJ),
                     width=3,
-                    state='active'
+                    state='normal'
                 )
             )
             buttons[i][j].pack(expand=1)
 
-initBoard()
-root.mainloop()
+if __name__ == "__main__":
+    initBoard()
+    root.mainloop()
