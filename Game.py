@@ -1,12 +1,15 @@
+from head import *
+
+
 class Game:
     def __init__(self):
         self.board = [
-            ['', '', ''],
-            ['', '', ''],
-            ['', '', '']
+            [B, B, B],
+            [B, B, B],
+            [B, B, B]
         ]
-        self.current_player = "x"
-        self.wait_player = "o"
+        self.current_player = HUMAN
+        self.wait_player = COMPUTER
         self.win_player = str()
     
     def get_board(self, i=None, j=None):
@@ -19,25 +22,30 @@ class Game:
         self.current_player, self.wait_player = self.wait_player, self.current_player
 
     def move(self, i, j):
-        self.board[i][j] = self.current_player
-        self.change_player()
+        if self.board[i][j] == BLANK:
+            self.board[i][j] = self.current_player
+            self.change_player()
+            return True
+        return False
     
     def is_there_winner(self):
-        sums = list() #each elements is a sum of one col, one row or one diagonal
-        for i in range(3): #Column
-            sums.append(self.board[i][0] + self.board[i][1] + self.board[i][2])
+        winStates = [
+            [self.board[1][0], self.board[1][1], self.board[1][2]],
+            [self.board[0][0], self.board[0][1], self.board[0][2]],
+            [self.board[2][0], self.board[2][1], self.board[2][2]],
+            [self.board[0][0], self.board[1][0], self.board[2][0]],
+            [self.board[0][1], self.board[1][1], self.board[2][1]],
+            [self.board[0][2], self.board[1][2], self.board[2][2]],
+            [self.board[0][0], self.board[1][1], self.board[2][2]],
+            [self.board[2][0], self.board[1][1], self.board[0][2]],
+        ]
 
-        for j in range(3): #Row
-            sums.append(self.board[0][j] + self.board[1][j] + self.board[2][j])
-        
-        sums.append(self.board[0][0] + self.board[1][1] + self.board[2][2]) #Diag leftToRight
-        
-        sums.append(self.board[0][2] + self.board[1][1] + self.board[2][0]) #Diag rightToLeft
-
-        for sum in sums:
-            if sum == 'xxx' or sum == 'ooo':
-                self.win_player = self.wait_player
-                return True
+        if [X, X, X] in winStates:
+            self.win_player = X
+            return True
+        elif [O, O, O] in winStates:
+            self.win_player = O
+            return True
         return False
 
     def winner(self):
@@ -47,16 +55,14 @@ class Game:
        
         for i in range(3): #Column
             for j in range(3): #Row
-                if self.board[i][j] == '':
+                if self.board[i][j] == BLANK:
                     return False
-                else:
-                    pass
-        return True if not self.winner() else False
+        return True if self.winner()==False else False
 
     def get_state(self):
         if self.winner():
-            return 'win'
+            return WIN
         elif self.no_winner():
-            return 'draw'
+            return DRAW
         else:
-            return 'ongoing'
+            return ONGOING
