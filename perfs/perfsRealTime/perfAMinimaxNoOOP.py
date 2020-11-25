@@ -93,16 +93,15 @@ board = [
     [B, B, B]
 ]
 
-#aiPlay(board)
+aiPlay(board)
 
-isWin(board, X)
 '''
 
 moy = 0
 i = 0
-for meas in range(1000):
+for meas in range(1):
     moy += timeit.timeit(setup=IMPORT, stmt=CODE, number=1)
     i += 1
 
 moy = moy/i
-print(moy*1000000)
+print(moy)

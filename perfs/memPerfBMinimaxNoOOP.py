@@ -1,29 +1,25 @@
-import timeit
+from memory_profiler import profile
 
-IMPORT = '''
 from copy import deepcopy
 from random import randint
 
 from head import X, O, HUMAN, COMPUTER, BLANK, B
 
 inf = 999
-    '''
 
-
-CODE = '''
+@profile
 def isWin(board, player):
-    winStates = [
-        [board[0][0], board[0][1], board[0][2]],
-        [board[1][0], board[1][1], board[1][2]],
-        [board[2][0], board[2][1], board[2][2]],
-        [board[0][0], board[1][0], board[2][0]],
-        [board[0][1], board[1][1], board[2][1]],
-        [board[0][2], board[1][2], board[2][2]],
-        [board[0][0], board[1][1], board[2][2]],
-        [board[2][0], board[1][1], board[0][2]],
-    ]
+    sums = list() #each elements is a sum of one col, one row or one diagonal
+    for i in range(3): #Column
+        sums.append(board[i][0] + board[i][1] + board[i][2])
 
-    if [player, player, player] in winStates:
+    for j in range(3): #Row
+        sums.append(board[0][j] + board[1][j] + board[2][j])
+    
+    sums.append(board[0][0] + board[1][1] + board[2][2]) #Diag leftToRight
+    sums.append(board[0][2] + board[1][1] + board[2][0])
+
+    if [player+player+player] in sums:
         return True
     return False
 
@@ -86,7 +82,7 @@ def aiPlay(board):
         i, j, value = minimax(board, depth, COMPUTER) 
 
     return i, j, value
-
+    
 board = [
     [X, B, B],
     [B, B, B],
@@ -96,13 +92,3 @@ board = [
 #aiPlay(board)
 
 isWin(board, X)
-'''
-
-moy = 0
-i = 0
-for meas in range(1000):
-    moy += timeit.timeit(setup=IMPORT, stmt=CODE, number=1)
-    i += 1
-
-moy = moy/i
-print(moy*1000000)

@@ -1,31 +1,25 @@
-import timeit
+from memory_profiler import profile
 
-IMPORT = '''
 from copy import deepcopy
 from random import randint
 
 from head import X, O, HUMAN, COMPUTER, BLANK, B
 
 inf = 999
-    '''
 
 
-CODE = '''
-def isWin(board, player):
-    winStates = [
-        [board[0][0], board[0][1], board[0][2]],
-        [board[1][0], board[1][1], board[1][2]],
-        [board[2][0], board[2][1], board[2][2]],
-        [board[0][0], board[1][0], board[2][0]],
-        [board[0][1], board[1][1], board[2][1]],
-        [board[0][2], board[1][2], board[2][2]],
-        [board[0][0], board[1][1], board[2][2]],
-        [board[2][0], board[1][1], board[0][2]],
-    ]
+def test_vertical(plateau,joueur):
+    return any(plateau[0][j] == plateau[1][j] == plateau[2][j] == joueur for j in range(3))
 
-    if [player, player, player] in winStates:
-        return True
-    return False
+def test_diagonales(plateau,joueur):
+    return all(plateau[i][i] == joueur for i in range(3)) or all(plateau[2-i][i] == joueur for i in range(3))
+    
+def test_horizontal(plateau,joueur):
+    return any(all(plateau[lig][col] == joueur for col in range(3))for lig in range(3))
+
+@profile       
+def isWin(plateau,joueur):
+    return test_horizontal(plateau,joueur) or test_vertical(plateau,joueur) or test_diagonales(plateau,joueur)
 
 def eval(board):
     if isWin(board, COMPUTER):
@@ -96,13 +90,3 @@ board = [
 #aiPlay(board)
 
 isWin(board, X)
-'''
-
-moy = 0
-i = 0
-for meas in range(1000):
-    moy += timeit.timeit(setup=IMPORT, stmt=CODE, number=1)
-    i += 1
-
-moy = moy/i
-print(moy*1000000)

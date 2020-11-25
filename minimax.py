@@ -1,17 +1,11 @@
-import timeit
-
-IMPORT = '''
 from copy import deepcopy
 from random import randint
 
-from head import X, O, HUMAN, COMPUTER, BLANK, B
+from head import *
 
 inf = 999
-    '''
 
-
-CODE = '''
-def isWin(board, player):
+def isWin(board, player): #2 fois moins longs que des for, 4 fois moins que des any/all
     winStates = [
         [board[0][0], board[0][1], board[0][2]],
         [board[1][0], board[1][1], board[1][2]],
@@ -81,28 +75,7 @@ def aiPlay(board):
 
     if depth == 9: #Si l'ordi commence
         i, j = randint(0, 2), randint(0, 2)
-        value = None
     else:
         i, j, value = minimax(board, depth, COMPUTER) 
 
     return i, j, value
-
-board = [
-    [X, B, B],
-    [B, B, B],
-    [B, B, B]
-]
-
-#aiPlay(board)
-
-isWin(board, X)
-'''
-
-moy = 0
-i = 0
-for meas in range(1000):
-    moy += timeit.timeit(setup=IMPORT, stmt=CODE, number=1)
-    i += 1
-
-moy = moy/i
-print(moy*1000000)

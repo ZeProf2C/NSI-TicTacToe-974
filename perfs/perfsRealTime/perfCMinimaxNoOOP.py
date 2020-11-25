@@ -1,25 +1,27 @@
+import timeit
+
+IMPORT = '''
 from copy import deepcopy
 from random import randint
 
-from head import *
+from head import X, O, HUMAN, COMPUTER, BLANK, B
 
 inf = 999
+    '''
 
-def isWin(board, player):
-    winStates = [
-        [board[0][0], board[0][1], board[0][2]],
-        [board[1][0], board[1][1], board[1][2]],
-        [board[2][0], board[2][1], board[2][2]],
-        [board[0][0], board[1][0], board[2][0]],
-        [board[0][1], board[1][1], board[2][1]],
-        [board[0][2], board[1][2], board[2][2]],
-        [board[0][0], board[1][1], board[2][2]],
-        [board[2][0], board[1][1], board[0][2]],
-    ]
 
-    if [player, player, player] in winStates:
-        return True
-    return False
+CODE = '''
+def test_vertical(plateau,joueur):
+    return any(plateau[0][j] == plateau[1][j] == plateau[2][j] == joueur for j in range(3))
+
+def test_diagonales(plateau,joueur):
+    return all(plateau[i][i] == joueur for i in range(3)) or all(plateau[2-i][i] == joueur for i in range(3))
+    
+def test_horizontal(plateau,joueur):
+    return any(all(plateau[lig][col] == joueur for col in range(3))for lig in range(3))
+            
+def isWin(plateau,joueur):
+    return test_horizontal(plateau,joueur) or test_vertical(plateau,joueur) or test_diagonales(plateau,joueur)
 
 def eval(board):
     if isWin(board, COMPUTER):
@@ -75,7 +77,26 @@ def aiPlay(board):
 
     if depth == 9: #Si l'ordi commence
         i, j = randint(0, 2), randint(0, 2)
+        value = None
     else:
         i, j, value = minimax(board, depth, COMPUTER) 
 
     return i, j, value
+
+board = [
+    [X, B, B],
+    [B, B, B],
+    [B, B, B]
+]
+
+aiPlay(board)
+'''
+
+moy = 0
+i = 0
+for meas in range(1):
+    moy += timeit.timeit(setup=IMPORT, stmt=CODE, number=1)
+    i += 1
+
+moy = moy/i
+print(moy)

@@ -9,7 +9,7 @@ from time import sleep
 
 from head import *
 from Game import *
-from iaMinimaxNoOOP import *
+from minimax import *
 
 
 game = Game()
