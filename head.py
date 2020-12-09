@@ -11,3 +11,5 @@ WIN = 'Un joueur à gagné'
 
 HUMAN = X
 COMPUTER = O
+
+historic = []
