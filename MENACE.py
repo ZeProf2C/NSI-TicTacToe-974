@@ -77,14 +77,10 @@ def ai_menace_play (board,hist,config):
     hist.append(bestMove)
     return possibleMoves[bestMove][0],possibleMoves[bestMove][1]
 
-#Wip
 def ai_reward(intens,hist,config):
     for sign in hist:
         config[sign] += intens
     hist = []
     save_menace(config)
         
-            
-
-
-#init_menace()
+# init_menace()
