@@ -10,11 +10,13 @@ from time import sleep
 from head import *
 from Game import *
 from minimax import *
-
+from MENACE import *
 
 game = Game()
 root = tk.Tk()
 font = tkFont.Font(size=60)
+
+
 
 buttons = [
     [],
@@ -49,7 +51,7 @@ def win():
 
 def NoWinner():
     disableButtons()
-    messagebox.showinfo("Game Over", "Vous êtes MAUVAIS !")
+    messagebox.showinfo("Game Over", DRAW)
 
 def iaMove():
     i, j, v = aiPlay(game.get_board())
