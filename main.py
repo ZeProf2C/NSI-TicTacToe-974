@@ -7,19 +7,16 @@ import timeit
 
 from time import sleep
 
-import pickle
-
 from head import *
 from Game import *
 from minimax import *
 from MENACE import *
 
-
-
-configurations = load_menace()
 game = Game()
 root = tk.Tk()
 font = tkFont.Font(size=60)
+
+
 
 buttons = [
     [],
@@ -54,22 +51,17 @@ def win():
 
 def NoWinner():
     disableButtons()
-    messagebox.showinfo("Game Over", "Vous êtes MAUVAIS !")
+    messagebox.showinfo("Game Over", DRAW)
 
 def iaMove():
-    i, j = ai_menace_play(game.get_board(),historic,configurations)
+    i, j, v = aiPlay(game.get_board())
     game.move(i, j)
     buttonUpdate(i, j)
 
 def winUpdate():
     if game.is_there_winner():
-        if game.winner() == COMPUTER:
-            ai_reward(2,historic,configurations)
-        else:
-            ai_reward(-1,historic,configurations)
         win()
     elif game.no_winner():
-        ai_reward(1,historic,configurations)
         NoWinner()
 
 def buttonPress(i, j):

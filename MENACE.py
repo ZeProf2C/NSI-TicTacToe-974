@@ -62,29 +62,32 @@ def get_possible_moves(board,config):
         move = get_ia_moves(move)
         sign=rech_sign_equi(move,config)
         if sign==None:
-            sign=signature(move)
+            sign=signature(board)
             config[sign] = 0
         list_moves[sign] = i
     return list_moves
 
+
+configurations = load_menace()
+
+historic = []
         
-def ai_menace_play (board,hist,config):
-    possibleMoves = get_possible_moves(board,config)
+def ia_menace_play (board,hist):
+    possibleMoves = get_possible_moves(board,configurations)
     bestMove = next(iter(possibleMoves.keys()))
     for sign in possibleMoves:
-        if config[bestMove] < config[sign]:
+        if possibleMoves[bestMove] < configurations[sign]:
             bestMove = sign
-    hist.append(bestMove)
+    hist.append(possibleMoves[bestMove])
     return possibleMoves[bestMove][0],possibleMoves[bestMove][1]
 
 #Wip
-def ai_reward(intens,hist,config):
+""" def ia_reward(config,hist):
     for sign in hist:
-        config[sign] += intens
-    hist = []
-    save_menace(config)
+        config[sign] """
         
-            
+save_menace(configurations)
+
 
 
 #init_menace()
