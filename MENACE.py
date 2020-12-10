@@ -5,23 +5,29 @@ from copy import deepcopy
 import pickle
 
 def get_ia_moves (board):
-    numBoard = []
+    human = []
+    computer = []
     for line in range(len(board)):
         for case in range(len(board[line])):
-            if board[line][case] == O:
-                numBoard.append(case + line * 3)
-    return numBoard
+            if board[line][case] == COMPUTER:
+                computer.append(case + line * 3)
+    for line in range(len(board)):
+        for case in range(len(board[line])):
+            if board[line][case] == HUMAN:
+                human.append(case + line * 3)
+                
+    return [computer,human]
 
 def signature(board):
-    return sum(2**move for move in board)
+    return tuple(sum(2**move for move in player) for player in board)   
 
 def sym_vert(board):
     sym={0:2,1:1,2:0,3:5,4:4,5:3,6:8,7:7,8:6}
-    return [sym[move] for move in board] 
+    return [[sym[move] for move in player] for player in board]
 
 def rot_dir(board):
     rot={0:6,1:3,2:6,3:7,4:4,5:1,6:8,7:5,8:2}
-    return [rot[move] for move in board]
+    return [[rot[move] for move in player] for player in board]
 
 def equivalent(sign,board):
     rep=False

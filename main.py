@@ -54,7 +54,7 @@ def win():
 
 def NoWinner():
     disableButtons()
-    messagebox.showinfo("Game Over", "Vous êtes MAUVAIS !")
+    messagebox.showinfo("Game Over", "égalité")
 
 def iaMove():
     i, j = ai_menace_play(game.get_board(),historic,configurations)
