@@ -83,4 +83,4 @@ def ai_reward(intens,hist,config):
     hist = []
     save_menace(config)
         
-# init_menace()
+#init_menace()

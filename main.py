@@ -68,21 +68,22 @@ def winUpdate():
         else:
             ai_reward(-1,historic,configurations)
         win()
+        return True
     elif game.no_winner():
         ai_reward(1,historic,configurations)
         NoWinner()
+        return True
+    return False
 
 def buttonPress(i, j):
     if game.move(i, j):
         buttonUpdate(i, j)
     
-    winUpdate()
-
-    disableButtons()
-    iaMove()
-    enableButtons()
-
-    winUpdate()
+    if not winUpdate():
+        disableButtons()
+        iaMove()
+        enableButtons()
+        winUpdate()
     
 
 def initBoard():
