@@ -57,20 +57,20 @@ def NoWinner():
     messagebox.showinfo("Game Over", "égalité")
 
 def iaMove():
-    i, j = ai_menace_play(game.get_board(),historic,configurations)
+    if CURRENT_AI == "menace":
+        i, j = ai_menace_play(game.get_board(),historic,configurations)
+    else :
+        i, j, v = aiPlay(game.get_board())
+
+
     game.move(i, j)
     buttonUpdate(i, j)
 
 def winUpdate():
     if game.is_there_winner():
-        if game.winner() == COMPUTER:
-            ai_reward(2,historic,configurations)
-        else:
-            ai_reward(-1,historic,configurations)
         win()
         return True
     elif game.no_winner():
-        ai_reward(1,historic,configurations)
         NoWinner()
         return True
     return False
@@ -84,6 +84,16 @@ def buttonPress(i, j):
         iaMove()
         enableButtons()
         winUpdate()
+    elif CURRENT_AI == "menace" :
+        if game.no_winner():
+            ai_reward(1,historic,configurations)
+        else:
+            if game.winner() == COMPUTER:
+                ai_reward(2,historic,configurations)
+            else:
+                ai_reward(-1,historic,configurations)
+
+
     
 
 def initBoard():

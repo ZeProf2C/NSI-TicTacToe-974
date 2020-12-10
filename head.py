@@ -12,4 +12,6 @@ WIN = 'Un joueur à gagné'
 HUMAN = X
 COMPUTER = O
 
+CURRENT_AI = "minmax" #soit "menace" ou "minmax"
+
 historic = []
