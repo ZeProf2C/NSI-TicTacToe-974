@@ -93,6 +93,24 @@ def buttonPress(i, j):
             else:
                 ai_reward(-1,historic,configurations)
 
+def autoTraining():
+    global CURRENT_AI
+    if not winUpdate():
+        iaMove()
+        winUpdate()
+        root.after(500, autoTraining)
+        if CURRENT_AI == "menace":
+            CURRENT_AI = "minmax"
+        else:
+            CURRENT_AI = "menace"
+    if game.no_winner():
+        ai_reward(1,historic,configurations)
+    else:
+        if game.winner() == COMPUTER:
+            ai_reward(2,historic,configurations)
+        else:
+            ai_reward(-1,historic,configurations)
+
 
     
 
@@ -120,4 +138,5 @@ def initBoard():
 
 if __name__ == "__main__":
     initBoard()
+    root.after(500, autoTraining)
     root.mainloop()
